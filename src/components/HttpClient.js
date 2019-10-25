@@ -1,5 +1,5 @@
 import fetchIntercept from 'fetch-intercept';
-
+import {Alert} from 'react-native';
 class HttpClient {
   async Intercept(data) {
     return fetchIntercept.register({
@@ -16,10 +16,18 @@ class HttpClient {
       response: function(response) {
         console.log('response : ', response);
         // Modify the reponse object
+        if (response.status === 200) {
+          Alert.alert('Intercept', JSON.stringify(response));
+        } else {
+          Alert.alert('Intercept error', JSON.stringify(response));
+        }
         return response;
       },
       responseError: function(error) {
-        console.log('responseError : ', error);
+        if (error == 'TypeError: Network request failed') {
+          // console.log('responseError : ', error);
+          Alert.alert('Intercept error', 'Network request failed');
+        }
         // Handle an fetch error
         return Promise.reject(error);
       },
